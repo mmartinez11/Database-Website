@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Anime List</title>
+    <!-- Load style sheets -->
+    <link rel="stylesheet" href=
+  "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css">
+
+    <link rel="stylesheet" href="styleLogin.css">
+
+
+    <!-- Load any supplemental Javascript libraries here -->
+    <script src=
+    "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
+    
+
+  </head>
+  <body style="background-color:mintcream">
+    
+    <!-- from example 
+    <ul>
+      <li class="list"><a href="/db">Query the database</a></li>
+    </ul>
+    -->
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3" id="firstColumn">
+          <div>
+          <!-- Column 1 Code Here -->
+          
+
+          </div>
+      </div>
+
+        <div class="col-md-6" id="mainColumn">
+
+          <!-- Column 2 Code Here -->
+          <form id="loginInfo">
+            <H1>Anime List Login</H1>
+            <div class="form-group">
+                <label>User Name</label>
+                <input class="form-control" id="userName" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input class="form-control" id="userPassword1" input type="password">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Repeat Password</label>
+              <input class="form-control" id="userPassword2" input type="password">
+            </div>
+            <button type="button" class="btn btn-light" id="btnCancel">Cancel</button>
+            <button type="button" class="btn btn-light" id="btnSignUp">Sign Up</button>
+          </form>
+        </div>
+
+        <div class="col-md-3" id="lastColumn">
+          <!-- Column 3 Code Here -->
+          
+
+        </div>
+      </div> <!-- class="row" -->
+    </div> <!-- class="container" -->
+  </body>
+  <script>
+      
+      //Event Handlers
+      document.getElementById("btnSignUp").addEventListener("click", function(){
+        //add user to database
+        var userName = document.getElementById("userName").value;
+        var password = document.getElementById("userPassword1").value;
+      
+        var input = {u: userName, p: password};
+        $.ajax({
+          type: 'POST',
+          url: '/signup.html',
+          data: input,
+          success: function(data){
+            //do something
+            if(data == -999){
+              alert("Username already taken");
+              location.reload();
+            }
+            else{
+              sessionStorage.setItem("curUser", userName);
+              sessionStorage.setItem("curID", data);
+              window.location.href = "/profile.html" 
+            }
+            
+            
+          }
+        });
+      });
+      document.getElementById("btnCancel").addEventListener("click", function(){
+        window.location.href = "/" 
+      });
+  </script>
+</html>

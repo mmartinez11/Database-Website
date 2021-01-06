@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Anime List</title>
+    <!-- Load style sheets -->
+    <link rel="stylesheet" href=
+  "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css">
+
+    <link rel="stylesheet" href="styleProfile.css">
+
+    <!-- Load any supplemental Javascript libraries here -->
+    <script src=
+    "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+
+    
+
+  </head>
+  <body style="background-color:mintcream">
+    
+    <!-- from example 
+    <ul>
+      <li class="list"><a href="/db">Query the database</a></li>
+    </ul>
+    -->
+    <div id="fullPage">
+
+      
+      
+      <!-- Stats -->
+      <div id="statsContent">
+        <div class="container-fluid">
+          
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header">Year Ranges of Shows</div>
+                <div css="card-body">
+                  <canvas id="yearGraph" height="60"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-header">Most Watched Genres</div>
+                <div class="card-body">
+                  <canvas id="genreGraph" height="140"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-header">Source Material</div>
+                <div class="card-body">
+                  <canvas id="sourceGraph" height="300"></canvas>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Side bar -->
+      <div id="sidebar">
+        <ul class="sidebar-nav">
+          <li>
+            <img src="user.png" class="card-img-top" alt="Default User" style="width: 150px; height: 150px;"> <!-- width="200" height="200" -->
+          </li>
+          <br>
+          <li><h5 class="card-title" id='userName' style="font-size: 25px;">UserName</h5></li>
+          <li>  
+              <div class="card">
+                <div class="card-header" style="padding: 0px;">Total Days</div>
+                <div class="card-body" id="dayStat">Content</div>
+              </div>
+              <div class="card">
+                <div class="card-header" style="padding: 0px;">Total Shows</div>
+                <div class="card-body" id="showStat">Content</div>
+              </div>
+              <div class="card">
+                <div class="card-header" style="padding: 0px;">Total Episodes</div>
+                <div class="card-body" id="epStat">Content</div>
+              </div>
+          </li>
+          <li>
+                <input class="form-control" style="margin-top: 10px; margin-bottom: 10px;" placeholder="Search" id="fsearch">
+          </li>
+          <li>
+              <button type="button" class="btn btn-success" id="btnSearch">Search</button>
+            
+          </li>
+          <li>
+                <!-- <a href="#" class="btn btn-light" id="btnList">List</a> -->
+                <button type="button" class="btn btn-info " id="btnList">My List</button>
+          </li>
+          <li>
+
+            <button type="button" class="btn btn-warning" id="btnLogOut">Log Out</button>
+
+          </li>
+        </ul>
+      </div> 
+
+
+    </div>
+  </body>
+  <script>
+
+  document.getElementById("btnLogOut").addEventListener("click", function(){
+        window.location.href = "/" 
+  });
+
+  document.getElementById("btnList").addEventListener("click", function(){
+        window.location.href = "/mylist.html" 
+  });
+
+//-----------------------------------------------------------------------------------------------------------------
+  //what happens as soon as page loads
+  $(document).ready(function()
+  {
+    //alert(sessionStorage.getItem("curUser"));
+    document.getElementById("userName").innerHTML = sessionStorage.getItem("curUser");
+    var curID = sessionStorage.getItem("curID");
+    var input = {id: curID};
+    $.ajax({
+          type: 'POST',
+          url: '/profile.html/days',
+          data: input,
+          success: function(data){
+            document.getElementById("dayStat").innerHTML = data[0];
+            document.getElementById("epStat").innerHTML = data[1];
+            document.getElementById("showStat").innerHTML = data[2];
+            
+            makeYearGraph(data[3]);
+            makeGenreGraph(data[4]);
+            makeSourceGraph(data[5]);
+
+          }
+    });
+
+  });
+
+  document.getElementById("btnSearch").addEventListener("click", function(){
+
+    var searchElement = document.getElementById("fsearch").value;
+    sessionStorage.setItem("searchItem", searchElement);
+
+    //window.alert(searchElement);
+
+    window.location.href = "/search.html" 
+
+  });
+
+  //-----------------------------------------------------------------------------------------------------------------
+
+  function makeYearGraph(tuple){
+      var x = [];
+      var y = [];
+      for(var i = 0; i < tuple.length; ++i){
+        x.push(tuple[i][0]);
+        y.push(tuple[i][1]);
+      }
+      var ctx = document.getElementById('yearGraph');
+      var lineGraph = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: x,
+          datasets: [{ 
+            data: y,
+            borderColor: "#FA8072"
+          }]
+
+          
+        },
+        options: {
+          legend: {
+            display: false
+          }
+        }
+      });
+  }
+  function makeGenreGraph(tuple){
+    var x = [];
+    var y = [];
+    for(var i = 0; i < tuple.length; ++i){
+      x.push(tuple[i][0]);
+      y.push(tuple[i][1]);
+    }
+    var data = {
+        fill: true,  
+        datasets: [{
+            data: y,
+            backgroundColor: [
+              "#ae4358",
+              "#a2c8ec",
+              "#0c2127",
+              "#5c83a5",
+              "#334940",        
+            ]
+        }],
+        
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: x
+        
+    };
+    var ctx = document.getElementById('genreGraph');
+    var myPieChart = new Chart(ctx, {
+      type: 'bar',
+      data: data
+    });
+  }
+  function makeSourceGraph(tuple){
+    var x = [];
+    var y = [];
+    for(var i = 0; i < tuple.length; ++i){
+      x.push(tuple[i][0]);
+      y.push(tuple[i][1]);
+    }
+    var data = {
+        fill: true,  
+        datasets: [{
+            data: y,
+            backgroundColor: [
+              "#F85B1A",
+              "#072083",
+              "#FFD7C1",
+              "#E59982",
+              "#000000",
+              "#8A9294"           
+            ]
+        }],
+        
+
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: x
+        
+    };
+    var ctx = document.getElementById('sourceGraph');
+    var myPieChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: data
+    });
+  }
+
+  //Event Handlers
+      
+  </script>
+</html>

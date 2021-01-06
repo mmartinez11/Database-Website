@@ -1,0 +1,70 @@
+/* Copyright (c) 2017 MIT 6.813/6.831 course staff, all rights reserved.
+ * Redistribution of original or derived work requires permission of course staff.
+ */
+
+/* REMOVE ME - dashed lines and height for debugging */
+#fullPage{
+  display: flex;
+  position: relative;
+}
+#sidebar {
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  background-color: salmon;
+  border: 10px solid salmon;
+  opacity: 0.9;
+  padding-top: 30px;
+}
+
+#statsContent{
+  width: 100%;
+  position: absolute;
+  padding: 15px;
+  padding-left: 250px;
+}
+
+.sidebar-nav{
+  padding: 0;
+  list-style: none;
+
+}
+
+.sidebar-nav li{
+  text-align: center;
+  line-height: 40px;
+}
+
+/*.sidebar-nav li a{
+  text-decoration: none;
+  color: blue;
+}*/
+
+#btnList{
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+}
+.row{
+  padding: 5px;
+}
+
+.card-header{
+  text-align: center;
+  background-color: lightseagreen;
+  color: white;
+
+}
+.card{
+  margin-top: 10px;
+}
+
+.card-body{
+  text-align: center;
+
+}
+
+
+
+
+/* Your css code here! */
