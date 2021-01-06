@@ -1,3 +1,11 @@
+# Tools Used 
+* JavaScript
+* HTML5
+* BootStrap
+* NodeJS
+* MySQL
+* SQL
+
 # Instructions
 1. Installing Database Instructions:
 
